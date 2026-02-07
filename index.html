@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quick Question ?</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe6ee, #ffc0d9);
+      font-family: system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    /* FULL SCREEN CONFETTI */
+    #confetti {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      width: min(520px, 92vw);
+      padding: 30px 26px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 24px;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: clamp(22px, 4vw, 30px);
+      margin-bottom: 16px;
+    }
+
+    .instruction {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 14px;
+    }
+
+    .riddle {
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 85%;
+      padding: 14px 16px;
+      border-radius: 999px;
+      border: 2px solid #ff5f96;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+    }
+
+    button {
+      margin-top: 18px;
+      padding: 14px 32px;
+      border-radius: 999px;
+      border: none;
+      background: #ff3b7a;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(255, 59, 122, 0.4);
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .result {
+      display: none;
+      margin-top: 24px;
+      animation: pop 0.4s ease;
+    }
+
+    .rose img {
+      width: 200px;
+      max-width: 100%;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="card">
+    <div id="quiz">
+      <h1>Don’t Overthink This... 👀</h1>
+
+      <div class="instruction">
+        Solve the riddle to receive something special 💌
+      </div>
+
+      <div class="riddle">
+        I’m red most of the time,<br />
+        I don’t say anything,<br />
+        but I’m often used<br />
+        to say everything.<br /><br />
+        <strong>What am I?</strong>
+      </div>
+
+      <input id="answer" placeholder="Type your answer here…" />
+      <br />
+      <button id="submit">Unlock</button>
+
+      <div class="hint" id="hint"></div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="rose">
+        <img src="https://media.giphy.com/media/Zl7u48zLVFgLpRwq6f/giphy.gif" />
+      </div>
+      <h1>Rose For You ❤️</h1>
+      <p>इससे ज़्यादा क्या चाहिए?</p>
+    </div>
+  </div>
+
+  <script>
+    const submit = document.getElementById("submit");
+    const input = document.getElementById("answer");
+    const hint = document.getElementById("hint");
+    const result = document.getElementById("result");
+    const quiz = document.getElementById("quiz");
+    const canvas = document.getElementById("confetti");
+
+    const confettiInstance = confetti.create(canvas, { resize: true });
+
+    function fireFullScreenConfetti() {
+      const duration = 1200;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confettiInstance({
+          particleCount: 6,
+          startVelocity: 35,
+          spread: 360,
+          origin: {
+            x: Math.random(),
+            y: Math.random() * 0.6
+          }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    submit.addEventListener("click", () => {
+      const value = input.value.trim().toLowerCase();
+
+      if (value === "rose") {
+        quiz.style.display = "none";
+        result.style.display = "block";
+        hint.textContent = "";
+        fireFullScreenConfetti();
+      } else {
+        const hints = [
+          "People usually give this when words feel too small.",
+          "It’s not said… it’s handed.",
+          "Think red. Think petals.",
+          "You’re definitely overthinking this 😄"
+        ];
+        hint.textContent = hints[Math.floor(Math.random() * hints.length)];
+      }
+    });
+  </script>
+</body>
+</html>
